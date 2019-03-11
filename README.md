@@ -64,57 +64,67 @@ INSERT INTO items (item_id, category_id, model, producer, price, characteristics
 INSERT INTO items (item_id, category_id, model, producer, price, characteristics)
   VALUES (6, 0, 'Pixel 3', 'Google', 700, {});
 ```
-<!-- ![](images/0.png) -->
+![](images/0.png)
 
 #### 1.	Напишіть запит, який показує структуру створеної таблиці (команда DESCRIBE)
 
 ```
 DESCRIBE items
 ```
+![](images/1.png)
 
 #### 2. Напишіть запит, який виведіть усі товари в певній категорії відсортовані за ціною
 
 ```
 SELECT * FROM items WHERE category_id = 0;
 ```
+![](images/2.png)
 
 #### 3. Напишіть запити, які вибирають товари за різними критеріями в межах певної категорії: назва,  ціна (в проміжку), ціна та виробник
 
 ```
 SELECT * FROM items WHERE category_id = 0 AND model LIKE 'iPhone%';
 ```
+![](images/3.png)
 
 ```
 SELECT * FROM items WHERE category_id = 0 AND price > 550 and price < 650;
 ```
+![](images/4.png)
 
 ```
 SELECT * FROM items WHERE category_id = 0 AND price > 650 AND producer LIKE 'Google';
 ```
+![](images/5.png)
 
 #### 4. Напишіть запити, які вибирають товари за: наявність певних характеристик; певна характеристика та її значення
 
 ```
 SELECT * FROM items WHERE characteristics CONTAINS KEY 'diagonal' ALLOW FILTERING;
 ```
+![](images/6.png)
 
 ```
 SELECT * FROM items WHERE characteristics CONTAINS KEY 'diagonal' AND characteristics['diagonal'] = '1.5in' ALLOW FILTERING;
 ```
+![](images/7.png)
 
 #### 5. Оновить опис товару: змінить існуючі значення певної характеристики; додайте нові властивості (характеристики) товару; видалить характеристику товару
 
 ```
 UPDATE items SET characteristics=characteristics + {'diagonal':'1.69in'} WHERE category_id=2 AND item_id=5 AND price=300;
 ```
+![](images/8.png)
 
 ```
 UPDATE items SET characteristics=characteristics + {'diagonal':'4.7in'} WHERE category_id=0 AND item_id=0 AND price=600;
 ```
+![](images/9.png)
 
 ```
 DELETE characteristics['diagonal'] FROM items WHERE category_id=0 AND item_id=0 AND price=600;
 ```
+![](images/10.png)
 
 #### Створіть таблицю orders в якій міститься ім'я замовника і інформація про замовлення. Для кожного замовника повинна бути можливість швидко шукати його замовлення і виконувати по них запити. Саме замовлення містить вартість, дату і набір товарів
 ```
@@ -145,76 +155,89 @@ INSERT INTO orders JSON'{"order_id":1, "user_name":"Tim Apple", "sum":250, "crea
 
 INSERT INTO orders JSON'{"order_id":2, "user_name":"Elon Tesla", "sum":250, "created":"1552325203000", "items": [{"category_id":2, "item_id":4, "price":250}]}';
 ```
+![](images/11.png)
 
 #### 1. Напишіть запит, який показує структуру створеної таблиці (команда DESCRIBE)
 
 ```
 DESCRIBE orders;
 ```
+![](images/12.png)
 
 #### 2. Для замовника виведіть всі його замовлення відсортовані за часом коли вони були зроблені
 
 ```
 SELECT * FROM orders WHERE user_name = 'Tim Apple';
 ```
+![](images/13.png)
 
 #### 3. Для замовника знайдіть замовлення з певним товаром
 
 ```
 SELECT * FROM orders WHERE user_name = 'Tim Apple' AND items CONTAINS {"category_id":0, "item_id":0, "price":600} ALLOW FILTERING;
 ```
+![](images/14.png)
 
 #### 4. Для замовника знайдіть замовлення за певний період і їх кількість
 
 ```
 SELECT * FROM orders WHERE user_name = 'Tim Apple' AND created > 1552325200000 AND created < 1552325203000;
 ```
+![](images/15.png)
 
 ```
 SELECT COUNT(*) FROM orders WHERE user_name = 'Tim Apple' AND created > 1552325200000 AND created < 1552325203000;
 ```
+![](images/16.png)
 
 #### 5. Для кожного замовників визначте середню вартість замовлення
 
 ```
 SELECT user_name, AVG(sum) FROM orders GROUP BY user_name;
 ```
+![](images/17.png)
 
 #### 6. Для кожного замовників визначте суму на яку були зроблені усі його замовлення
 
 ```
 SELECT user_name, SUM(sum) FROM orders GROUP BY user_name;
 ```
+![](images/18.png)
 
 #### 7. Для кожного замовників визначте замовлення з максимальною вартістю
 
 ```
 ???
 ```
+<!-- ![](images/19.png) -->
 
 #### 8. Модифікуйте певне замовлення додавши / видаливши один або кілька товарів при цьому також змінюючи вартість замовлення
 
 ```
 UPDATE orders SET items=items + [{"category_id":2, "item_id":4, "price":250}], sum=1550 WHERE user_name = 'Tim Apple' AND order_id = 0 AND created = '1552325201000';
 ```
+![](images/20.png)
 
 #### 9. Для кожного замовлення виведіть час коли його ціна були занесена в базу (SELECT WRITETIME)
 
 ```
 SELECT user_name, order_id, sum, WRITETIME(sum) FROM orders;
 ```
+![](images/21.png)
 
 #### 10. Створіть замовлення з певним часом життя (TTL), після якого воно видалиться 
 
 ```
 INSERT INTO orders JSON'{"order_id":3, "user_name":"Elon Tesla", "sum":300, "created":"1552325204000", "items": [{"category_id":2, "item_id":5, "price":300}]}' USING TTL 86400;
 ```
+![](images/22.png)
 
 #### 11. Поверніть замовлення у форматі JSON
 
 ```
 SELECT JSON * FROM orders WHERE user_name = 'Tim Apple' AND order_id = 0 AND created = '1552325201000'; 
 ```
+![](images/23.png)
 
 #### 12. Додайте замовлення у форматі JSON
 
