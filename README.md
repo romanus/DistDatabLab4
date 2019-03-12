@@ -1,5 +1,5 @@
 
-## Task 3 - Neo4j
+## Task 4 - Cassandra Basics
 
 by Teodor Romanus
 
